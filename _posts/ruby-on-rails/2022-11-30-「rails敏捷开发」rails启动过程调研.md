@@ -23,7 +23,7 @@ tags:
 > 本文中的路径和包版本均为本人电脑中的版本
 >
 
-#### 找到rails
+## 找到rails
 
 首先查看rails命令的路径，执行 which rails 命令，可以得到
 
@@ -106,7 +106,7 @@ end
 
 其中，`Rails::AppLoader.exec_app`执行了app加载任务，在这里，rails开始从我们创建的app里面获取项目信息来准备启动。
 
-#### server命令
+## server命令
 
 我们可以查看`exec_app`函数的内容，它将 `APP_PATH` 设置为 `config/application`，然后加载 `config/boot` 和 `rails/commands`。
 
@@ -223,7 +223,7 @@ def perform
 end
 ```
 
-#### 回顾app
+## 回顾app
 
 在rails官方文档中，给出了app的启动过程：
 
@@ -332,7 +332,7 @@ Rails.application.load_server
 
 至此，app已经创建完成。
 
-#### 选择服务器
+## 选择服务器
 
 在上述`start`方法中的最后将app实例通过`server.run`方法进行调用，`server` 方法通过 `Rack::Handler` 选择服务器，位于`/home/zhengmingyu/.rvm/gems/ruby-3.0.0/gems/rack-2.2.4/lib/rack/handler.rb`，有关内容如下：
 
