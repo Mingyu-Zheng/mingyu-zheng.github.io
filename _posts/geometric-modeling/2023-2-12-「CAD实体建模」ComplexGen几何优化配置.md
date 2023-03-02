@@ -1,13 +1,13 @@
 ---
 layout:     post
 title:      "「CAD实体建模」 ComplexGen几何优化配置"
-subtitle:   "ComplexGen Geometric Refinement configuration"
+subtitle:   "ComplexGen Geometric Refinement Configuration"
 date:       2023-2-12 12:00:00
 author:     "Azaan"
 header-img: "img/post-bg-geometric-modeling.jpg"
 katex: true
 tags:
-    - CAD实体建模
+    - CAD实体建模 Linux系统配置
 ---
 
 
