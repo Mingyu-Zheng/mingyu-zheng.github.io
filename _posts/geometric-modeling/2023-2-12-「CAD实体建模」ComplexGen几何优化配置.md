@@ -7,7 +7,8 @@ author:     "Azaan"
 header-img: "img/post-bg-geometric-modeling.jpg"
 katex: true
 tags:
-    - CAD实体建模  - Linux系统配置
+    - CAD实体建模  
+    - Linux系统配置
 ---
 
 
