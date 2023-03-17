@@ -33,13 +33,21 @@ Transformer最早起源于自然语言处理（NLP）问题，这一问题不同
 一个自注意力块（self-attention block）我们记作 $\mathbf{sa[\bullet]}$，它有 $N$ 个输入 $\mathbf{x_n}$，每个输入都是 $D\times 1$ 维的（即列向量），然后返回 $N$ 个相同大小的输出。在NLP的概念中，一个输入 $\mathbf{x_n}$ 代表一个单词或一个词组。
 
 对于一个自注意力块来说，首先对每个输入计算 $values$：
+
+
 $$
 \mathbf{v_n=\beta_v + \Omega_v x_n}
 $$
+
+
 在这里 $\mathbf{\beta_v}$ 和 $\mathbf{\Omega_v}$ 分别代表偏移（bias）和权重（weight），之后第 $n$ 个输出 $\mathbf{sa[x_n]}$ 是一个 $\mathbf{v_n}$ 的加权和：
+
+
 $$
 \mathbf{sa[x_n]}=\sum_{m=1}^{N} a[\mathbf{x_m,x_n}]\mathbf{v_m}
 $$
+
+
 其中的标量权重 $a[\mathbf{x_m,x_n}]$ 是 $\mathbf{x_m}$ 对 $\mathbf{x_n}$ 的注意力（attention），这 $N$ 个权重都是非负的并且其和为1。
 
 ![](https://azaan-zheng.github.io/img/machine-learning/20230302/1.jpg)
@@ -51,14 +59,22 @@ $$
 在前面的推导中我们知道，对于每个输入 $\mathbf{x_m}$，我们可以独立地得到对应的 $value$：$\mathbf{\beta_v+\Omega_v x_m}$，这一过程是比较熟悉的；对于不同输入，我们可以计算其之间的注意力权重 $a[\mathbf{x_m,x_n}]$，我们下面将重点探讨这部分权重的计算。
 
 我们对输入进行以下两个线性变换：
+
+
 $$
 \mathbf{q_n=\beta_q+\Omega_q x_n} \\
 \mathbf{k_n=\beta_k+\Omega_k x_n}
 $$
+
+
 在这里我们将 $\mathbf{q_n}$ 和 $\mathbf{k_n}$ 分别称为 $query$ 和 $key$。之后我们计算二者之间的点积并且通过 softmax 函数进行处理：
+
+
 $$
 a[\mathbf{x_m,x_n}]=softmax_m[\mathbf{k^T_{\bullet}q_n}] = \frac{exp[\mathbf{k^T_m q_n}]}{\sum_{i=1}^{N}exp[\mathbf{k^T_i q_n}]}
 $$
+
+
 $query$ 和 $key$ 是从信息检索领域所继承的说法，我们可以解释为，一个点乘的结果相当于计算了查询内容 $query$ 和关键字 $key$ 之间的相似性。通过这个权值，我们能够分析这个输入对应提取的是什么位置的信息，从而对应地作用到 $value$ 上，生成对应的结果。
 
 ### 矩阵形式
@@ -66,15 +82,23 @@ $query$ 和 $key$ 是从信息检索领域所继承的说法，我们可以解�
 ![](https://azaan-zheng.github.io/img/machine-learning/20230302/2.jpg)
 
 上图表示了矩阵形式下自注意力块的运算过程。如图所示，我们对输入的 $N$ 个向量都分别进行前述运算，最终运算的过程相当于对于大小为 $D\times N$ 的矩阵 $\mathbf{X}$ 的运算。$value$，$query$ 和 $key$ 可分别计算如下：
+
+
 $$
 \mathbf{V[X]=\beta_v 1^T + \Omega_v X} \\
 \mathbf{Q[X]=\beta_q 1^T + \Omega_q X} \\
 \mathbf{K[X]=\beta_k 1^T + \Omega_k X}
 $$
+
+
 这里 $\mathbf{1}$ 是一个 $N\times 1$ 的全1矩阵用来同一维度，相应的，自注意力计算可以表示为：
+
+
 $$
 \mathbf{Sa[X]=V[X]\vdot Softmax[K[X]^T Q[X]]}
 $$
+
+
 这里 $\mathbf{Softmax[\bullet]}$ 是对所得矩阵的每一列进行作用（如果将 $\mathbf{q_n}$ 对应一个列向量，那么可以将 $\mathbf{K}$ 与其作用的结果也对应为一个列向量）。
 
 ### 位置编码
