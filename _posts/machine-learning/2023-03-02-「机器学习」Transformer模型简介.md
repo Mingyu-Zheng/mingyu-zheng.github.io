@@ -95,7 +95,7 @@ $$
 
 
 $$
-\mathbf{Sa[X]=V[X]\vdot Softmax[K[X]^T Q[X]]}
+\mathbf{Sa[X]}=\mathbf{V[X]\vdot Softmax[K[X]^T Q[X]]}
 $$
 
 
@@ -109,15 +109,47 @@ $$
 
 **相对位置编码（relative position embeddings）**：有时其输入可以是一个完整的句子或者许多句子，单词的绝对位置远不如两个输入之间的相对位置重要。相对位置编码为两个位置之间学习一个参数 $\pi_{a,b}$，并使用它来修改注意力矩阵（如相加或相乘等方式）。
 
+### 点积缩放
+
+注意力计算中的点积结果的幅度较大，使得 softmax 之后，原始点积结果的最大值完全占据主导地位，输入的变化对输出几乎没有影响，这使得梯度非常小，模型难以训练。为了防止这种情况，点积按照 $key$ 和 $query$ 的维度的平方根进行缩放：
 
 
+$$
+\mathbf{Sa[X] = V \vdot Softmax} [\frac{\mathbf{K^T Q}}{\sqrt{D_q}}]
+$$
 
 
+### 多头注意力机制
+
+我们常常将多个注意力块并行投入使用，这一机制即多头注意力机制（multi-head self-attention），我们假定需要计算 $H$ 个不同种类的 $value$，$key$ 和 $query$：
 
 
+$$
+\mathbf{V_h=\beta_{vh} 1^T + \Omega_{vh} X} \\
+\mathbf{Q_h=\beta_{qh} 1^T + \Omega_{qh} X} \\
+\mathbf{K_h=\beta_{kh} 1^T + \Omega_{kh} X}
+$$
 
 
+第 $h$ 个 $head$ 的自注意力过程可以表示为：
 
+
+$$
+\mathbf{Sa_h[X] = V_h \vdot Softmax} [\frac{\mathbf{K^T_h Q_h}}{\sqrt{D_q}}]
+$$
+
+
+一般来说，如果输入 $\mathbf{x_m}$ 的维度是 $D$ ，注意力头的个数是 $H$ ，$value$，$key$ 和 $query$ 的大小为 $D/H$，自注意力头的输出矩阵垂直连接起来，再经过一个线性变换 $\mathbf{\Omega_c}$ 得到最终输出：
+
+
+$$
+\mathbf{MhSa[X]=\Omega_c \left[ Sa_1[X]^T,Sa_2[X]^T,...,Sa_H[X]^T \right] ^T}
+$$
+
+
+![](https://azaan-zheng.github.io/img/machine-learning/20230302/3.jpg)
+
+上图揭示了多头注意力机制的运作过程。
 
 
 
