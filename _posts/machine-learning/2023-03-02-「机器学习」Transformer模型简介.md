@@ -94,8 +94,7 @@ $$
 
 
 $$
-\\
-\mathbf{Sa[X]}=\mathbf{V[X]\vdot Softmax[K[X]^T Q[X]]}
+\mathbf{Sa[X]}=\mathbf{ V[X] \bullet Softmax [ K[X]^T Q[X] ] }
 $$
 
 
@@ -114,8 +113,7 @@ $$
 注意力计算中的点积结果的幅度较大，使得 softmax 之后，原始点积结果的最大值完全占据主导地位，输入的变化对输出几乎没有影响，这使得梯度非常小，模型难以训练。为了防止这种情况，点积按照 $key$ 和 $query$ 的维度的平方根进行缩放：
 
 $$
-\\
-\mathbf{Sa[X] = V \vdot Softmax} [\frac{\mathbf{K^T Q}}{\sqrt{D_q}}]
+Sa[X] = V \vdot Softmax [ \frac{\mathbf{K^T Q}}{\sqrt{D_q}} ]
 $$
 
 
@@ -134,8 +132,7 @@ $$
 
 
 $$
-\\
-\mathbf{Sa_h[X] = V_h \vdot Softmax} [\frac{\mathbf{K^T_h Q_h}}{\sqrt{D_q}}]
+Sa_h[X] = V_h \vdot Softmax [ \frac{\mathbf{K^T_h Q_h}}{\sqrt{D_q}} ]
 $$
 
 一般来说，如果输入 $\mathbf{x_m}$ 的维度是 $D$ ，注意力头的个数是 $H$ ，$value$，$key$ 和 $query$ 的大小为 $D/H$，自注意力头的输出矩阵垂直连接起来，再经过一个线性变换 $\mathbf{\Omega_c}$ 得到最终输出：
@@ -190,15 +187,43 @@ GPT3是解码器模型的一个示例，其基本架构与编码器模型极其�
 
 ### 语言模型
 
+GPT3是一个自回归的语言模型，它将N个 $token$ 的联合概率 $Pr(t_1,t_2,...,t_N)$ 转化为自回归序列：
 
+
+$$
+Pr(t_1,t_2,...,t_N)=Pr(t_1) \prod_{n=2}^{N} Pr(t_n|t_1,...,t_{n-1})
+$$
+
+
+也即将一个句子中的若干 $token$ 连续出现的概率，转化为下一个 $token$ 在之前的 $token$ 基础上的条件概率乘积。
 
 ### 掩码自注意力机制
 
+我们可以看到我们将文本的输出作为 $token$ 出现的概率来表征，训练解码器是一个自回归的过程，这个过程以最大化输入文本的概率为目标。理想情况下，我们会输入整个句子，然后同时计算所有的对数概率和梯度。然而这有一个问题，如果我们输入完整的句子，那么系统在预测下一个的时候，不仅会看到这个单词之前的内容，还可以看到这个单词之后的内容，这样我们无法判断它是不是通过这个单词前面的内容来预测的，从而更加说明它在实际预测的过程中真的有效。
 
+我们引入掩码自注意力机制（masked self-attention）来解决这一问题。由于 $token$ 只在自注意力层中进行彼此之间的交互，因此我们可以设置预测的过程中对后续的 $token$ 的注意力为0，要实现这一点，可以在通过 $\mathbf{Softmax[\bullet]}$ 函数之前将注意力计算中的相应点积设置为负无穷大。
 
+![](https://azaan-zheng.github.io/img/machine-learning/20230302/6.jpg)
 
+如图所示，整个解码器网络的操作即：输入文本被标记化并被转换为 $embedding$ ，然后被传递到 transformer 网络中。由于现在使用了掩码自注意力机制，因此它们只能关注现在和之前的 $token$。每个输出 $embedding$ 的目标是预测序列中的下一个 $token$，因此在 transformer 层之后，通过一个线性层将输出 $embedding$ 映射到词汇表的大小，并通过 $\mathbf{Softmax[\bullet]}$ 将其转换为一种概率分布。我们的目标就是使用交叉熵损失，在已知前面序列的情况下最大化下一个 $token$ 应当出现的概率。
 
+### GPT3
 
+GPT3大规模地应用了上述的思想，序列长度为2048个 $token$，并且由于同时处理2048个 $token$ 的多个跨度，因此总批量大小为320万个 $token$。有96个transformer层，每个层处理大小为12288的单词 $embedding$。每个自注意力层中有96个 $head$，并且 $value$，$key$ 和 $query$ 的维度是128。它使用3000亿个 $token$ 进行训练，包含1750亿个参数。
+
+# Encoder-Decoder示例：机器翻译
+
+语言之间的翻译是 $sequence-to-sequence$ 任务的一个例子，这需要一个编码器（计算原始句子的中间表示）和一个解码器（以目标语言生成句子），这个任务即典型的 Encoder-Decoder 模型。
+
+比如一个从英语翻译到法语的模型，Encoder接受一个英语句子作为输入，并为每个 $token$ 生成其对应的 $embedding$。在训练过程中，Decoder接受ground truth法语句子作为输入，将其送入一系列 transformer 层，并使用掩码自注意力机制让其预测下一个单词。然而，Decoder同时也需要关注Encoder的输出，这样最终每一个法语单词才将是同时结合了输入英语信息和此前翻译的法语的单词，这一过程称为交叉注意力机制（cross-attention）。
+
+![](https://azaan-zheng.github.io/img/machine-learning/20230302/7.jpg)
+
+如图所示，两个句子被送入模型中，目的是将第一句翻译成第二句，a）图中，第一句话通过Encoder编码，b）图中，第二句话通过Decoder，它使用掩码自注意力机制，但也使用交叉注意力机制来处理编码器的输出 $embedding$，我们希望通过训练使得Decoder正确输出下一个单词的概率最大化。
+
+ ![](https://azaan-zheng.github.io/img/machine-learning/20230302/8.jpg)
+
+这里再解释一下何为交叉注意力机制，这是通过修改Decoder中的transformer层来实现的。Decoder中的原始transformer层由一个掩码自注意力层组成，然后是单独应用于每个 $embedding$ 的神经网络，在这两个组件之间我们加入一个新的注意力层，这里Decoder的 $embedding$ 关注Encoder的 $embedding$，具体来说，$query$ 是根据Decoder的 $embedding$ 来计算的，而 $value$ 和 $key$ 是通过Encoder的 $embedding$ 来计算的。
 
 
 
