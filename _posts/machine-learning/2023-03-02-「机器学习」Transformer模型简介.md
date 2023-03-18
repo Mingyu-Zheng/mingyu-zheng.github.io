@@ -94,7 +94,7 @@ $$
 
 
 $$
-\mathbf{Sa[X]}=\mathbf{ V[X] \bullet Softmax [ K[X]^T Q[X] ] }
+\mathbf{Sa[X]}=\mathbf{ V[X] \cdot Softmax [ K[X]^T Q[X] ] }
 $$
 
 
@@ -113,7 +113,7 @@ $$
 注意力计算中的点积结果的幅度较大，使得 softmax 之后，原始点积结果的最大值完全占据主导地位，输入的变化对输出几乎没有影响，这使得梯度非常小，模型难以训练。为了防止这种情况，点积按照 $key$ 和 $query$ 的维度的平方根进行缩放：
 
 $$
-Sa[X] = V \vdot Softmax [ \frac{\mathbf{K^T Q}}{\sqrt{D_q}} ]
+\mathbf{Sa[X] = V \cdot Softmax} [ \frac{\mathbf{K^T Q}}{\sqrt{D_q}} ]
 $$
 
 
@@ -132,7 +132,7 @@ $$
 
 
 $$
-Sa_h[X] = V_h \vdot Softmax [ \frac{\mathbf{K^T_h Q_h}}{\sqrt{D_q}} ]
+\mathbf{Sa_h[X] = V_h \cdot Softmax} [ \frac{\mathbf{K^T_h Q_h}}{\sqrt{D_q}} ]
 $$
 
 一般来说，如果输入 $\mathbf{x_m}$ 的维度是 $D$ ，注意力头的个数是 $H$ ，$value$，$key$ 和 $query$ 的大小为 $D/H$，自注意力头的输出矩阵垂直连接起来，再经过一个线性变换 $\mathbf{\Omega_c}$ 得到最终输出：
