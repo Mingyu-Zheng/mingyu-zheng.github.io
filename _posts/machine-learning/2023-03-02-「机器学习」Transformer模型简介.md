@@ -229,7 +229,7 @@ GPT3大规模地应用了上述的思想，序列长度为2048个 $token$，并�
 
 ### 参考文献
 
-1. Understanding Deep Learning
+1. 《Understanding Deep Learning》Simon J.D. Prince
 
 
 
