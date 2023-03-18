@@ -91,12 +91,10 @@ $$
 $$
 
 这里 $\mathbf{1}$ 是一个 $N\times 1$ 的全1矩阵用来同一维度，相应的，自注意力计算可以表示为：
-$$
-\mathbf{Sa[X]=V[X] \vdot Softmax \left[ K[X]^T Q[X] \right]}
-$$
 
 
 $$
+\\
 \mathbf{Sa[X]}=\mathbf{V[X]\vdot Softmax[K[X]^T Q[X]]}
 $$
 
@@ -116,11 +114,7 @@ $$
 注意力计算中的点积结果的幅度较大，使得 softmax 之后，原始点积结果的最大值完全占据主导地位，输入的变化对输出几乎没有影响，这使得梯度非常小，模型难以训练。为了防止这种情况，点积按照 $key$ 和 $query$ 的维度的平方根进行缩放：
 
 $$
-\mathbf{Sa[X]}= \mathbf{V \vdot Softmax} \left[  \frac{ \mathbf{K^T Q}}{\sqrt{D_q}} \right]
-$$
-
-
-$$
+\\
 \mathbf{Sa[X] = V \vdot Softmax} [\frac{\mathbf{K^T Q}}{\sqrt{D_q}}]
 $$
 
@@ -138,12 +132,9 @@ $$
 
 第 $h$ 个 $head$ 的自注意力过程可以表示为：
 
-$$
-\mathbf{Sa_h[X]}= \mathbf{V_h \vdot Softmax} \left[  \frac{ \mathbf{K_h^T Q_h}}{\sqrt{D_q}} \right]
-$$
-
 
 $$
+\\
 \mathbf{Sa_h[X] = V_h \vdot Softmax} [\frac{\mathbf{K^T_h Q_h}}{\sqrt{D_q}}]
 $$
 
@@ -161,12 +152,14 @@ $$
 上图揭示了多头注意力机制的运作过程。
 
 整体来看，一个transformer层的组成可以由如下过程构成：
+
 $$
 \mathbf{X \larr X + MhSa[X]} \\
 \mathbf{X \larr LayerNorm[X]} \\
 \mathbf{x_n \larr x_n + mlp[x_n]} \\
 \mathbf{X \larr LayerNorm[X]}
 $$
+
 输入首先通过一个多头注意力模块，然后是一个全连接网络MLP，这两个部分都是残差网络（即输出被添加回原始输入），此外通常在自注意力模块和MLP之后添加LayerNorm操作。
 
 # Encoder示例：BERT
@@ -179,7 +172,7 @@ BERT是一个编码器模型，使用了30000个 $token$ 的词汇表，输入�
 
 ![](https://azaan-zheng.github.io/img/machine-learning/20230302/4.jpg)
 
-如图所示，输入 $token$ 被转换为 $embedding$ ，之后通过一系列 transformer 层（橙色表示每个 $token$ 都关注其他输入 $token$）来得到输出 $embedding$ 。一小部分输入 $token$ 被随即替换为通用的 $<Mask>$ 。在预训练中，目标是从相关的输入中预测缺失的单词，因此输出 $embedding$ 通过 $softmax$ 函数，并使用多类分类损失。在图中我们可以看到，网络处理了7个 $token$，并对选择的2个位置进行预测。
+如图所示，输入 $token$ 被转换为 $embedding$ ，之后通过一系列 transformer 层（橙色表示每个 $token$ 都关注其他输入 $token$）来得到输出 $embedding$ 。一小部分输入 $token$ 被随即替换为通用的 $\lt Mask\gt$ 。在预训练中，目标是从相关的输入中预测缺失的单词，因此输出 $embedding$ 通过 $softmax$ 函数，并使用多类分类损失。在图中我们可以看到，网络处理了7个 $token$，并对选择的2个位置进行预测。
 
 ### Fine-tuning
 
@@ -187,7 +180,7 @@ Fine-tuning 的概念来自于迁移学习，利用神经网络强大的泛化�
 
 ![](https://azaan-zheng.github.io/img/machine-learning/20230302/5.jpg)
 
-**文本分类**：如上图a）所示，在预训练期间加入 $<cls>$ 作为特殊的 $token$ 放置在每个句子的开头。对于一些文本分类任务，如情感分析，与 $<cls>$ 对应的向量会映射到一个数字上，这用来标识我们分类的结果。
+**文本分类**：如上图a）所示，在预训练期间加入 $\lt cls \gt$ 作为特殊的 $token$ 放置在每个句子的开头。对于一些文本分类任务，如情感分析，与 $\lt cls\gt$ 对应的向量会映射到一个数字上，这用来标识我们分类的结果。
 
 **单词分类**：如上图b）所示，将每个单词分类为一个实体类型（如个人、地点、组织或无实体）。为此，将每个输入嵌入 $\mathbf{x_n}$ 映射到 $K \times 1$ 向量，其中 $K$ 为不同类别，通过softmax函数得到每个类别的概率。
 
