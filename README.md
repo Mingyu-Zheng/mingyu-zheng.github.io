@@ -1,5 +1,5 @@
-[Azaan Blog](https://azaan-zheng.github.io)
+[Mingyu Blog](https://mingyu-zheng.github.io)
 ================================
 
-![](https://azaan-zheng.github.io/img/about.png)
+![](https://mingyu-zheng.github.io/img/about.png)
 

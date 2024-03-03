@@ -1,11 +1,11 @@
 # Site settings
-title: Azaan Blog
-SEOTitle: 潮落夜江的博客 | Azaan Blog
+title: Mingyu Blog
+SEOTitle: 潮落夜江的博客 | Mingyu Blog
 header-img: img/home-bg.jpg
 email: mingyu_zheng@126.com
 description: ""
 keyword: "潮落夜江"
-url: "https://azaan-zheng.github.io"
+url: "https://mingyu-zheng.github.io"
 baseurl: "" 
 
 # Publish posts or collection documents with a future date.
@@ -81,7 +81,7 @@ kramdown:
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
 sidebar-about-description: "胸中日月常新美"
-sidebar-avatar: https://github.com/Azaan-Zheng.png      # use absolute URL, seeing it's used in both `/` and `/about/`
+sidebar-avatar: https://github.com/mingyu-zheng.png      # use absolute URL, seeing it's used in both `/` and `/about/`
 
 
 # Featured Tags
@@ -104,7 +104,7 @@ page-katex: false
 # Friends
 friends: [
     {
-        title: "Azaan Blog",
+        title: "Mingyu Blog",
         href: "#"
     },{
         title: "Foo",
