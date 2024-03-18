@@ -94,7 +94,7 @@ make
 
 ### 问题二：`#  include "per_face_normals.cpp"`
 
-![image-20230118193633060](https://azaan-zheng.github.io/img/2CAD/ComplexGen/image-20230118193633060.png)
+![image-20230118193633060](https://mingyu-zheng.github.io/img/2CAD/ComplexGen/image-20230118193633060.png)
 
 ```shell
 cp *.cpp usr/local/include/igl
@@ -104,7 +104,7 @@ cp *.cpp usr/local/include/igl
 
 ### 问题三：`#include <unsupported/Eigen/SparseExtra>`
 
-![](https://azaan-zheng.github.io/img/2CAD/ComplexGen/2023-01-18-20-42-22.png)
+![](https://mingyu-zheng.github.io/img/2CAD/ComplexGen/2023-01-18-20-42-22.png)
 
 需要查看eigen的安装位置，将相对地址改成绝对地址
 
@@ -126,7 +126,7 @@ cp *.cpp usr/local/include/igl
 
 ### 问题四：`#include "raytri.c"`
 
-![image-20230118205705293](https://azaan-zheng.github.io/img/2CAD/ComplexGen/image-20230118205705293.png)
+![image-20230118205705293](https://mingyu-zheng.github.io/img/2CAD/ComplexGen/image-20230118205705293.png)
 
 解决方法，将对应文件复制到安装位置
 
@@ -138,7 +138,7 @@ cp raytri.c /usr/local/include/igl/
 
 ### 问题五：`extern"C" FILE * __cdecl __iob_func(void)`
 
-![image-20230118210646191](https://azaan-zheng.github.io/img/2CAD/ComplexGen/image-20230118210646191.png)
+![image-20230118210646191](https://mingyu-zheng.github.io/img/2CAD/ComplexGen/image-20230118210646191.png)
 
 解决：注释掉文件`SurfFitter.cpp`25-27行的这个函数
 
@@ -151,7 +151,7 @@ extern"C" FILE * __cdecl __iob_func(void)
 
 通过`grep -rn "__cdecl __iob_func"`命令的输出可以看到，这个函数只在这里定义了一次
 
-![image-20230118211337739](https://azaan-zheng.github.io/img/2CAD/ComplexGen/image-20230118211337739.png)
+![image-20230118211337739](https://mingyu-zheng.github.io/img/2CAD/ComplexGen/image-20230118211337739.png)
 
 通过查询可知，该函数与Visual Studio的环境有关，我们这里无需这一项，因此直接注释
 
@@ -159,9 +159,9 @@ extern"C" FILE * __cdecl __iob_func(void)
 
 ### 问题六：`std::sqrt(deltaDiv108)`以及`std::atan2(betaIm, betaRe)`
 
-![image-20230118211649093](https://azaan-zheng.github.io/img/2CAD/ComplexGen/image-20230118211649093.png)
+![image-20230118211649093](https://mingyu-zheng.github.io/img/2CAD/ComplexGen/image-20230118211649093.png)
 
-![image-20230118211743184](https://azaan-zheng.github.io/img/2CAD/ComplexGen/image-20230118211743184.png)
+![image-20230118211743184](https://mingyu-zheng.github.io/img/2CAD/ComplexGen/image-20230118211743184.png)
 
 这个bug是因为数字类型转换的问题，在文件RootsPolynomial.h中的406-407行中，可以看到如下代码：
 
@@ -181,7 +181,7 @@ Rational theta = std::atan2((double)(betaIm), (double)(betaRe));
 
 ### 问题七：`inputfile.substr(0, inputfile.find_last_of("."))`
 
-![image-20230118212701419](https://azaan-zheng.github.io/img/2CAD/ComplexGen/image-20230118212701419.png)
+![image-20230118212701419](https://mingyu-zheng.github.io/img/2CAD/ComplexGen/image-20230118212701419.png)
 
 字符串处理问题，不是核心代码，直接将其修改为`string`类型
 
@@ -203,13 +203,13 @@ std::string inputprefix = inputfile.substr(0, inputfile.find_last_of("."));
 
 ### 问题八：编译参数报错
 
-![image-20230118213922070](https://azaan-zheng.github.io/img/2CAD/ComplexGen/image-20230118213922070.png)
+![image-20230118213922070](https://mingyu-zheng.github.io/img/2CAD/ComplexGen/image-20230118213922070.png)
 
 问题出在cannot find的4个参数
 
 使用`grep -rn "-llegacy_stdio_definitions"` 查看参数所在位置，可以看到位于同级目录下的`link.make`文件中：
 
-![image-20230118214720568](https://azaan-zheng.github.io/img/2CAD/ComplexGen/image-20230118214720568.png)
+![image-20230118214720568](https://mingyu-zheng.github.io/img/2CAD/ComplexGen/image-20230118214720568.png)
 
 该文件中的内容如下：
 
