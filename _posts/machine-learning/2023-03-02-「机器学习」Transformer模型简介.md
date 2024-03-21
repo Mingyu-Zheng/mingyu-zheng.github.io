@@ -3,7 +3,7 @@ layout:     post
 title:      "「机器学习」 Transformer模型简介"
 subtitle:   "Introduction to the transformer model"
 date:       2023-03-02 12:00:00
-author:     "Azaan"
+author:     "Mingyu"
 header-img: "img/post-bg-machine-learning.jpg"
 katex: true
 tags:
@@ -54,7 +54,7 @@ $$
 
 其中的标量权重 $a[\mathbf{x_m,x_n}]$ 是 $\mathbf{x_m}$ 对 $\mathbf{x_n}$ 的注意力（attention），这 $N$ 个权重都是非负的并且其和为1。
 
-![](https://azaan-zheng.github.io/img/machine-learning/20230302/1.jpg)
+![](https://mingyu-zheng.github.io/img/machine-learning/20230302/1.jpg)
 
 如上图所示，三个输入 $\mathbf{x_1,x_2,x_3}$ 分别计算 $values$，然后各自以不同的权重（红色部分）相加作为输出，分别得到 $\mathbf{sa[x_1],sa[x_2],sa[x_3]}$。
 
@@ -83,7 +83,7 @@ $query$ 和 $key$ 是从信息检索领域所继承的说法，我们可以解�
 
 ### 矩阵形式
 
-![](https://azaan-zheng.github.io/img/machine-learning/20230302/2.jpg)
+![](https://mingyu-zheng.github.io/img/machine-learning/20230302/2.jpg)
 
 上图表示了矩阵形式下自注意力块的运算过程。如图所示，我们对输入的 $N$ 个向量都分别进行前述运算，最终运算的过程相当于对于大小为 $D\times N$ 的矩阵 $\mathbf{X}$ 的运算。$value$，$query$ 和 $key$ 可分别计算如下：
 
@@ -148,7 +148,7 @@ $$
 $$
 
 
-![](https://azaan-zheng.github.io/img/machine-learning/20230302/3.jpg)
+![](https://mingyu-zheng.github.io/img/machine-learning/20230302/3.jpg)
 
 上图揭示了多头注意力机制的运作过程。
 
@@ -171,7 +171,7 @@ BERT是一个编码器模型，使用了30000个 $token$ 的词汇表，输入�
 
 预训练阶段使用自监督进行训练，这允许在不需要手动标签的情况下使用大量数据。对于BERT来说，自监督任务包括预测大型互联网语料库中的缺失单词。
 
-![](https://azaan-zheng.github.io/img/machine-learning/20230302/4.jpg)
+![](https://mingyu-zheng.github.io/img/machine-learning/20230302/4.jpg)
 
 如图所示，输入 $token$ 被转换为 $embedding$ ，之后通过一系列 transformer 层（橙色表示每个 $token$ 都关注其他输入 $token$）来得到输出 $embedding$ 。一小部分输入 $token$ 被随即替换为通用的 $\lt Mask\gt$ 。在预训练中，目标是从相关的输入中预测缺失的单词，因此输出 $embedding$ 通过 $softmax$ 函数，并使用多类分类损失。在图中我们可以看到，网络处理了7个 $token$，并对选择的2个位置进行预测。
 
@@ -179,7 +179,7 @@ BERT是一个编码器模型，使用了30000个 $token$ 的词汇表，输入�
 
 Fine-tuning 的概念来自于迁移学习，利用神经网络强大的泛化能力进行小数据的训练，可以理解为站在了巨人的肩膀上。在 Fine-tuning 阶段，调整模型参数使得网络专门用于特定任务，并加入额外的层，将输出向量转换为所需要的输出格式。
 
-![](https://azaan-zheng.github.io/img/machine-learning/20230302/5.jpg)
+![](https://mingyu-zheng.github.io/img/machine-learning/20230302/5.jpg)
 
 **文本分类**：如上图a）所示，在预训练期间加入 $\lt cls \gt$ 作为特殊的 $token$ 放置在每个句子的开头。对于一些文本分类任务，如情感分析，与 $\lt cls\gt$ 对应的向量会映射到一个数字上，这用来标识我们分类的结果。
 
@@ -207,7 +207,7 @@ $$
 
 我们引入掩码自注意力机制（masked self-attention）来解决这一问题。由于 $token$ 只在自注意力层中进行彼此之间的交互，因此我们可以设置预测的过程中对后续的 $token$ 的注意力为0，要实现这一点，可以在通过 $\mathbf{Softmax[\bullet]}$ 函数之前将注意力计算中的相应点积设置为负无穷大。
 
-![](https://azaan-zheng.github.io/img/machine-learning/20230302/6.jpg)
+![](https://mingyu-zheng.github.io/img/machine-learning/20230302/6.jpg)
 
 如图所示，整个解码器网络的操作即：输入文本被标记化并被转换为 $embedding$ ，然后被传递到 transformer 网络中。由于现在使用了掩码自注意力机制，因此它们只能关注现在和之前的 $token$。每个输出 $embedding$ 的目标是预测序列中的下一个 $token$，因此在 transformer 层之后，通过一个线性层将输出 $embedding$ 映射到词汇表的大小，并通过 $\mathbf{Softmax[\bullet]}$ 将其转换为一种概率分布。我们的目标就是使用交叉熵损失，在已知前面序列的情况下最大化下一个 $token$ 应当出现的概率。
 
@@ -221,11 +221,11 @@ GPT3大规模地应用了上述的思想，序列长度为2048个 $token$，并�
 
 比如一个从英语翻译到法语的模型，Encoder接受一个英语句子作为输入，并为每个 $token$ 生成其对应的 $embedding$。在训练过程中，Decoder接受ground truth法语句子作为输入，将其送入一系列 transformer 层，并使用掩码自注意力机制让其预测下一个单词。然而，Decoder同时也需要关注Encoder的输出，这样最终每一个法语单词才将是同时结合了输入英语信息和此前翻译的法语的单词，这一过程称为交叉注意力机制（cross-attention）。
 
-![](https://azaan-zheng.github.io/img/machine-learning/20230302/7.jpg)
+![](https://mingyu-zheng.github.io/img/machine-learning/20230302/7.jpg)
 
 如图所示，两个句子被送入模型中，目的是将第一句翻译成第二句，a）图中，第一句话通过Encoder编码，b）图中，第二句话通过Decoder，它使用掩码自注意力机制，但也使用交叉注意力机制来处理编码器的输出 $embedding$，我们希望通过训练使得Decoder正确输出下一个单词的概率最大化。
 
- ![](https://azaan-zheng.github.io/img/machine-learning/20230302/8.jpg)
+ ![](https://mingyu-zheng.github.io/img/machine-learning/20230302/8.jpg)
 
 这里再解释一下何为交叉注意力机制，这是通过修改Decoder中的transformer层来实现的。Decoder中的原始transformer层由一个掩码自注意力层组成，然后是单独应用于每个 $embedding$ 的神经网络，在这两个组件之间我们加入一个新的注意力层，这里Decoder的 $embedding$ 关注Encoder的 $embedding$，具体来说，$query$ 是根据Decoder的 $embedding$ 来计算的，而 $value$ 和 $key$ 是通过Encoder的 $embedding$ 来计算的。
 

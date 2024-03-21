@@ -3,7 +3,7 @@ layout:     post
 title:      "「rails敏捷开发」 rails启动过程调研"
 subtitle:   "the startup process of rails"
 date:       2022-11-30 12:00:00
-author:     "Azaan"
+author:     "Mingyu"
 header-img: "img/post-bg-ruby-on-rails.jpg"
 katex: true
 tags:

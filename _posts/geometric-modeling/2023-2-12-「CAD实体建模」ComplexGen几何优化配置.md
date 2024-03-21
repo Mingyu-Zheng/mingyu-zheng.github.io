@@ -3,7 +3,7 @@ layout:     post
 title:      "「CAD实体建模」 ComplexGen几何优化配置"
 subtitle:   "ComplexGen Geometric Refinement Configuration"
 date:       2023-2-12 12:00:00
-author:     "Azaan"
+author:     "Mingyu"
 header-img: "img/post-bg-geometric-modeling.jpg"
 katex: true
 tags:
