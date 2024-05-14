@@ -2,7 +2,7 @@
 layout:     post
 title:      "「计算机网络」 SMTP邮件Python脚本"
 subtitle:   "SMTP e-mail Python script"
-date:       2022-05-14 12:00:00
+date:       2024-05-14 12:00:00
 author:     "Mingyu"
 header-img: "img/post-bg-computer-network.jpg"
 katex: true
